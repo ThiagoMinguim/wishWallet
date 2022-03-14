@@ -1,19 +1,24 @@
-import {
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Text,
-  Form
-} from '@chakra-ui/react'
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
+import { Flex, FormControl, FormLabel, Input, Text } from '@chakra-ui/react'
+import { useState } from 'react'
+
 import { SButton } from '../components/SButton'
+
+interface Token {
+  token: string
+  balance: string
+}
+
+type FormData = Token
 
 export function AddToken() {
   const [token, setToken] = useState('')
   const [balance, setBalance] = useState('')
+  const [myTokens, setMyTokens] = useState([] as Token[])
+
+  const wishWalletStorageKey = '@wishwallet:tokens'
 
   const navigate = useNavigate()
 
@@ -21,12 +26,21 @@ export function AddToken() {
     navigate(-1)
   }
 
-  function handleSubmit(a: any) {
-    console.log('submitted')
-    console.log(a)
-  }
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting }
+  } = useForm()
 
-  // const handleInputChange = e => setTokens(e.target.value)
+  function onSubmit(data: FormData) {
+    setMyTokens([...myTokens, data])
+    localStorage.setItem(
+      wishWalletStorageKey,
+      JSON.stringify([...myTokens, data])
+    )
+    setToken('')
+    setBalance('')
+  }
 
   return (
     <Flex
@@ -52,33 +66,37 @@ export function AddToken() {
 
       <Flex justify="center" direction="column">
         <Flex direction="column" mt="40px">
-          <Form onSubmit={handleSubmit}>
-            <FormLabel color="text.primary">Token</FormLabel>
-            <Input
-              id="token"
-              bg="white"
-              value={token}
-              onChange={e => setToken(e.target.value)}
-            />
-
-            <FormLabel color="text.primary" mt="20px">
-              Balance
-            </FormLabel>
-            <Input
-              id="balance"
-              bg="white"
-              value={balance}
-              onChange={e => setBalance(e.target.value)}
-            />
-            <Flex justify="end" mt="30px">
-              <SButton
-                bg="button.confirm"
-                text="Save"
-                type="submit"
-                color="text.primary"
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl>
+              <FormLabel color="text.primary">Token</FormLabel>
+              <Input
+                id="token"
+                {...register('name', { required: true })}
+                bg="white"
+                value={token}
+                onChange={e => setToken(e.target.value)}
               />
-            </Flex>
-          </Form>
+
+              <FormLabel color="text.primary" mt="20px">
+                Balance
+              </FormLabel>
+              <Input
+                id="balance"
+                {...register('balance', { required: true })}
+                bg="white"
+                value={balance}
+                onChange={e => setBalance(e.target.value)}
+              />
+              <Flex justify="end" mt="30px">
+                <SButton
+                  bg="button.confirm"
+                  text="Save"
+                  type="submit"
+                  color="text.primary"
+                />
+              </Flex>
+            </FormControl>
+          </form>
         </Flex>
       </Flex>
     </Flex>
