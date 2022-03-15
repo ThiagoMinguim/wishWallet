@@ -5,7 +5,8 @@ export const theme = extendTheme({
     background: '#13152a',
     button: {
       confirm: '#aa33b5',
-      cancel: '#646464'
+      cancel: '#646464',
+      remove: '#920000'
     },
     text: {
       primary: '#ffffff'
