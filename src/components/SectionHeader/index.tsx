@@ -9,7 +9,7 @@ export function SectionHeader() {
   const { pathname } = useLocation()
 
   function handleAddNewToken() {
-    navigate('/addtoken')
+    navigate('/add-token')
   }
 
   return (

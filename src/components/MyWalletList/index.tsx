@@ -8,8 +8,12 @@ export function MyWalletList() {
   const response = localStorage.getItem('@wishwallet:tokens')
   const wallet = response ? JSON.parse(response) : []
 
-  function handleGoEdit() {
-    navigate('/edittoken')
+  function handleGoEdit(e: any) {
+    navigate(`/edit-token/${e}`)
+  }
+
+  const numberFormatted = (value: string) => {
+    return Intl.NumberFormat('en-US').format(+value)
   }
 
   return (
@@ -18,7 +22,9 @@ export function MyWalletList() {
         <Flex w="500px" mx="auto" h="auto" alignItems="center">
           <Link
             as={FaEdit}
-            onClick={handleGoEdit}
+            onClick={() => {
+              handleGoEdit(item.token)
+            }}
             color="text.primary"
             h="1rem"
             w="1rem"
@@ -33,7 +39,7 @@ export function MyWalletList() {
             </Flex>
 
             <Text color="text.primary" fontWeight="bold" fontSize="3xl">
-              {item.balance}
+              {numberFormatted(item.balance)}
             </Text>
           </Flex>
         </Flex>

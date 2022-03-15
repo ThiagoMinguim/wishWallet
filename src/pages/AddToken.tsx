@@ -29,8 +29,8 @@ type FormData = Token
 const schema = Yup.object().shape({
   token: Yup.string()
     .required('Token is required')
-    .min(3, 'min 3 characteres')
-    .max(5, 'max 5 characteres or less'),
+    .min(2, 'min 2 characteres')
+    .max(4, 'max 4 characteres or less'),
 
   balance: Yup.number()
     .required('balance is required')
@@ -61,20 +61,34 @@ export function AddToken() {
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   function onSubmit(data: FormData) {
-    setMyTokens([...myTokens, data])
-    localStorage.setItem(
-      wishWalletStorageKey,
-      JSON.stringify([...myTokens, data])
-    )
-    toast({
-      title: 'Wallet created.',
-      position: 'top',
-      description: "We've one wallet for you.",
-      status: 'success',
-      duration: 5000,
-      isClosable: true
-    })
-    reset()
+    const tokenAlreadyAdded = myTokens.find(({ token }) => token === data.token)
+    if (!tokenAlreadyAdded) {
+      setMyTokens([...myTokens, data])
+      localStorage.setItem(
+        wishWalletStorageKey,
+        JSON.stringify([...myTokens, data])
+      )
+
+      toast({
+        title: 'Token added',
+        position: 'top',
+        description: 'The token has been added to your wallet',
+        status: 'success',
+        duration: 5000,
+        isClosable: true
+      })
+      reset()
+      navigate(-1)
+    } else {
+      toast({
+        title: 'Token already exists',
+        position: 'top',
+        description: 'The token already exists in your wallet',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+    }
   }
 
   return (

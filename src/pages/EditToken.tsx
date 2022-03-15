@@ -4,13 +4,26 @@ import {
   Text,
   FormLabel,
   Input,
-  FormErrorMessage
+  FormErrorMessage,
+  useDisclosure,
+  Button
+} from '@chakra-ui/react'
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton
 } from '@chakra-ui/react'
 
 import { SButton } from '@/components/SButton'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export function EditToken() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const navigate = useNavigate()
 
   function handleBack() {
@@ -18,68 +31,92 @@ export function EditToken() {
   }
 
   return (
-    <Flex
-      w="500px"
-      mx="auto"
-      h="auto"
-      mt="50"
-      direction="column"
-      justify="center">
-      <Flex justify="space-between" align={'start'} alignItems="center">
-        <Flex>
-          <Text color="text.primary" alignSelf="center">
-            Add Token
-          </Text>
-        </Flex>
-        <SButton
-          color="text.primary"
-          text="Back"
-          onClick={handleBack}
-          bg="button.cancel"
-        />
-      </Flex>
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>You are sure?</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>
+              Are you sure you want to delete this token? This action cannot be
+              undone.
+            </Text>
+          </ModalBody>
 
-      <Flex justify="center" direction="column">
-        <Flex direction="column" mt="40px">
-          {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-          <FormControl>
-            <FormLabel color="text.primary">Token</FormLabel>
-            <Input id="token" bg="white" />
-            {/* <FormErrorMessage>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Flex
+        w="500px"
+        mx="auto"
+        h="auto"
+        mt="50"
+        direction="column"
+        justify="center">
+        <Flex justify="space-between" align={'start'} alignItems="center">
+          <Flex>
+            <Text color="text.primary" alignSelf="center">
+              Add Token
+            </Text>
+          </Flex>
+          <SButton
+            color="text.primary"
+            text="Back"
+            onClick={handleBack}
+            bg="button.cancel"
+          />
+        </Flex>
+
+        <Flex justify="center" direction="column">
+          <Flex direction="column" mt="40px">
+            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+            <FormControl>
+              <FormLabel color="text.primary">Token</FormLabel>
+              <Input id="token" bg="white" />
+              {/* <FormErrorMessage>
               {errors.token && errors.token.message}
             </FormErrorMessage> */}
-          </FormControl>
+            </FormControl>
 
-          <FormControl>
-            <FormLabel color="text.primary" mt="20px">
-              Balance
-            </FormLabel>
-            <Input id="balance" bg="white" />
-            {/* <FormErrorMessage>
+            <FormControl>
+              <FormLabel color="text.primary" mt="20px">
+                Balance
+              </FormLabel>
+              <Input id="balance" bg="white" />
+              {/* <FormErrorMessage>
               {errors.balance && errors.balance.message}
             </FormErrorMessage> */}
-          </FormControl>
-          <Flex justify="space-between" mt="30">
-            <Flex>
+            </FormControl>
+            <Flex justify="space-between" mt="30">
+              <Flex>
+                <SButton
+                  bg="button.remove"
+                  text="Remove"
+                  color="text.primary"
+                  width="150px"
+                  onClick={onOpen}
+                />
+              </Flex>
               <SButton
-                bg="button.remove"
-                text="remove"
+                bg="button.confirm"
+                text="Save"
+                type="submit"
                 color="text.primary"
-                width="150px"
+                width="130px"
               />
             </Flex>
-            <SButton
-              bg="button.confirm"
-              text="Save"
-              type="submit"
-              color="text.primary"
-              width="130px"
-            />
-          </Flex>
 
-          {/* </form> */}
+            {/* </form> */}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }

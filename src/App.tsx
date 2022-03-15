@@ -13,8 +13,8 @@ function App() {
       <SectionHeader />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="addtoken" element={<AddToken />} />
-        <Route path="edittoken" element={<EditToken />} />
+        <Route path="/add-token" element={<AddToken />} />
+        <Route path="/edit-token/:id" element={<EditToken />} />
       </Routes>
     </>
   )
