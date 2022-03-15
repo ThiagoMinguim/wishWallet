@@ -4,6 +4,7 @@ import { SectionHeader } from './components/SectionHeader'
 
 import { Home } from './pages/Home'
 import { AddToken } from './pages/AddToken'
+import { EditToken } from './pages/EditToken'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="addtoken" element={<AddToken />} />
+        <Route path="edittoken" element={<EditToken />} />
       </Routes>
     </>
   )
