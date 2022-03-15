@@ -1,4 +1,8 @@
 import { useState } from 'react'
+
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
 import {
   Flex,
   FormControl,
@@ -22,21 +26,26 @@ interface Token {
 
 type FormData = Token
 
+const schema = Yup.object().shape({
+  token: Yup.string()
+    .required('Token is required')
+    .min(3, 'min 3 characteres')
+    .max(5, 'max 5 characteres or less'),
+
+  balance: Yup.number()
+    .required('balance is required')
+    .typeError('balance must be a number')
+})
+
 export function AddToken() {
   const response = localStorage.getItem('@wishwallet:tokens')
   const wallet = response ? JSON.parse(response) : []
 
   const toast = useToast()
-  const statuses = ['success', 'error', 'warning', 'info']
 
-  const [token, setToken] = useState('')
-  const [input, setInput] = useState('')
-  const [balance, setBalance] = useState('')
   const [myTokens, setMyTokens] = useState(wallet as Token[])
 
   const wishWalletStorageKey = '@wishwallet:tokens'
-
-  const isError = input === ''
 
   const navigate = useNavigate()
 
@@ -47,8 +56,9 @@ export function AddToken() {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors, isSubmitting }
-  } = useForm<FormData>()
+  } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   function onSubmit(data: FormData) {
     setMyTokens([...myTokens, data])
@@ -64,9 +74,7 @@ export function AddToken() {
       duration: 5000,
       isClosable: true
     })
-
-    setToken('')
-    setBalance('')
+    reset()
   }
 
   return (
@@ -85,7 +93,7 @@ export function AddToken() {
         </Flex>
         <SButton
           color="text.primary"
-          text="Voltar"
+          text="Back"
           onClick={handleBack}
           bg="button.cancel"
         />
@@ -94,36 +102,32 @@ export function AddToken() {
       <Flex justify="center" direction="column">
         <Flex direction="column" mt="40px">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={isError}>
+            <FormControl isInvalid={!!errors.token}>
               <FormLabel color="text.primary">Token</FormLabel>
-              <Input
-                id="token"
-                {...register('token', { required: true })}
-                bg="white"
-                value={token}
-                onChange={e => setToken(e.target.value)}
-              />
+              <Input id="token" {...register('token')} bg="white" />
+              <FormErrorMessage>
+                {errors.token && errors.token.message}
+              </FormErrorMessage>
+            </FormControl>
 
+            <FormControl isInvalid={!!errors.balance}>
               <FormLabel color="text.primary" mt="20px">
                 Balance
               </FormLabel>
-              <Input
-                id="balance"
-                {...register('balance', { required: true })}
-                bg="white"
-                value={balance}
-                onChange={e => setBalance(e.target.value)}
-              />
-
-              <Flex justify="end" mt="30px">
-                <SButton
-                  bg="button.confirm"
-                  text="Save"
-                  type="submit"
-                  color="text.primary"
-                />
-              </Flex>
+              <Input id="balance" {...register('balance')} bg="white" />
+              <FormErrorMessage>
+                {errors.balance && errors.balance.message}
+              </FormErrorMessage>
             </FormControl>
+
+            <Flex justify="end" mt="30px">
+              <SButton
+                bg="button.confirm"
+                text="Save"
+                type="submit"
+                color="text.primary"
+              />
+            </Flex>
           </form>
         </Flex>
       </Flex>

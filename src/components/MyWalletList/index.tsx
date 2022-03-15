@@ -1,16 +1,24 @@
-import { Flex, Icon, Text } from '@chakra-ui/react'
+import { Flex, Icon, Link, Text } from '@chakra-ui/react'
 import { FaEdit } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 export function MyWalletList() {
+  const navigate = useNavigate()
+
   const response = localStorage.getItem('@wishwallet:tokens')
   const wallet = response ? JSON.parse(response) : []
+
+  function handleGoEdit() {
+    navigate('/edittoken')
+  }
 
   return (
     <>
       {wallet.map((item: any) => (
         <Flex w="500px" mx="auto" h="auto" alignItems="center">
-          <Icon
+          <Link
             as={FaEdit}
+            onClick={handleGoEdit}
             color="text.primary"
             h="1rem"
             w="1rem"
