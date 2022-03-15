@@ -1,8 +1,8 @@
 import { Flex, Text, Image } from '@chakra-ui/react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import starFall from '../../assets/shooting-star.svg'
-import { SButton } from '../../components/SButton'
+import starFall from '@/assets/shooting-star.svg'
+import { SButton } from '@/components/SButton'
 
 export function SectionHeader() {
   const navigate = useNavigate()
