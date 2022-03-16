@@ -12,8 +12,8 @@ import {
   useToast
 } from '@chakra-ui/react'
 
-import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { schema } from '@/utils/schema'
 
 import { SButton } from '@/components/SButton'
 
@@ -23,19 +23,6 @@ interface Token {
 }
 
 type FormData = Token
-
-const schema = Yup.object().shape({
-  name: Yup.string()
-    .required('Token is required')
-    .min(2, 'min 2 characteres')
-    .max(4, 'max 4 characteres or less')
-    .uppercase(),
-
-  balance: Yup.number()
-    .required('balance is required')
-    .typeError('balance must be a number')
-    .positive('balance must be positive')
-})
 
 export function AddToken() {
   const response = localStorage.getItem('@wishwallet:tokens')
