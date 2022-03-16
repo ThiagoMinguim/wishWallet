@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   Flex,
@@ -12,10 +11,7 @@ import {
   FormErrorMessage,
   useDisclosure,
   Button,
-  useToast
-} from '@chakra-ui/react'
-
-import {
+  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -25,19 +21,20 @@ import {
   ModalCloseButton
 } from '@chakra-ui/react'
 
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
 import { SButton } from '@/components/SButton'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
 
 interface Token {
-  token: string
+  name: string
   balance: string
 }
 
 type FormData = Token
 
 const schema = Yup.object().shape({
-  token: Yup.string()
+  name: Yup.string()
     .required('Token is required')
     .min(2, 'min 2 characteres')
     .max(4, 'max 4 characteres or less'),
@@ -50,31 +47,29 @@ const schema = Yup.object().shape({
 export function EditToken() {
   const wishWalletStorageKey = '@wishwallet:tokens'
 
-  const tokens = localStorage.getItem('@wishwallet:tokens')
-  const wallet = tokens ? JSON.parse(tokens) : []
-
   const [token, setToken] = useState({} as Token)
-  const [myTokens, setMyTokens] = useState(wallet as Token[])
-
+  const [wallet, setWallet] = useState([] as Token[])
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const navigate = useNavigate()
-
   const toast = useToast()
 
+  const navigate = useNavigate()
   const { pathname } = useLocation()
 
   function handleBack() {
     navigate(-1)
   }
 
-  const getToken = async (tokenName: string) => {
-    const targetToken = wallet.find((item: Token) => item.token === tokenName)
+  function getToken(tokenName: string) {
+    const tokens = localStorage.getItem(wishWalletStorageKey)
+    const wallet = tokens ? JSON.parse(tokens) : []
+    const targetToken = wallet.find((item: Token) => item.name === tokenName)
 
     setToken(targetToken)
+    setWallet(wallet)
   }
 
   function removeToken(tokenName: string) {
-    const newWallet = wallet.filter((item: Token) => item.token !== tokenName)
+    const newWallet = wallet.filter((item: Token) => item.name !== tokenName)
 
     localStorage.setItem(wishWalletStorageKey, JSON.stringify(newWallet))
 
@@ -90,28 +85,20 @@ export function EditToken() {
     navigate(-1)
   }
 
-  function attToken(data: FormData) {
-    const attToken: Token = wallet.find(
-      (tks: Token) => tks.token === pathname.split('/')[2]
+  function updateToken(data: FormData) {
+    const targetToken: Token | undefined = wallet.find(
+      (tokens: Token) => tokens.name === pathname.split('/')[2]
     )
-
-    const tokens = JSON.parse(localStorage.getItem(wishWalletStorageKey)!)
-
-    const updatedTokens = tokens.map((tk: Token) =>
-      tk.token === attToken.token ? data : tk
+    const updatedTokens = wallet.map((token: Token) =>
+      token.name === targetToken?.name ? data : token
     )
-
-    const tokenAlreadyAdded = tokens.find(
-      ({ token }: any) => token === data.token
+    const tokenAlreadyAdded = wallet.find(
+      ({ name }: Token) => name === data.name
     )
-
-    const sameUrl = pathname.split('/')[2] === data.token
-
+    const sameUrl = pathname.split('/')[2] === data.name
     if (!tokenAlreadyAdded || sameUrl) {
-      setMyTokens(updatedTokens)
-
+      setWallet(updatedTokens)
       localStorage.setItem(wishWalletStorageKey, JSON.stringify(updatedTokens))
-
       toast({
         title: 'Token Change Sucess',
         position: 'top',
@@ -168,7 +155,7 @@ export function EditToken() {
             <Button
               colorScheme="red"
               onClick={() => {
-                removeToken(token.token)
+                removeToken(token.name)
               }}>
               Remove Token
             </Button>
@@ -199,18 +186,20 @@ export function EditToken() {
 
         <Flex justify="center" direction="column">
           <Flex direction="column" mt="40px">
-            <form onSubmit={handleSubmit(attToken)}>
-              <FormControl isInvalid={!!errors.token}>
+            <form onSubmit={handleSubmit(updateToken)}>
+              <FormControl isInvalid={!!errors.name}>
                 <FormLabel color="text.primary">Token</FormLabel>
+
                 <Input
-                  id="token"
+                  id="name"
                   bg="white"
-                  placeContent={'aaaaaa'}
-                  {...register('token')}
-                  defaultValue={token.token}
+                  {...register('name')}
+                  value={token.name}
+                  defaultValue={token.name}
                 />
+
                 <FormErrorMessage>
-                  {errors.token && errors.token.message}
+                  {errors.name && errors.name.message}
                 </FormErrorMessage>
               </FormControl>
 
@@ -224,6 +213,7 @@ export function EditToken() {
                   {...register('balance')}
                   defaultValue={token.balance}
                 />
+
                 <FormErrorMessage>
                   {errors.balance && errors.balance.message}
                 </FormErrorMessage>
