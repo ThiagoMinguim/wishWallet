@@ -19,14 +19,14 @@ import { useNavigate } from 'react-router-dom'
 import { SButton } from '@/components/SButton'
 
 interface Token {
-  token: string
+  name: string
   balance: string
 }
 
 type FormData = Token
 
 const schema = Yup.object().shape({
-  token: Yup.string()
+  name: Yup.string()
     .required('Token is required')
     .min(2, 'min 2 characteres')
     .max(4, 'max 4 characteres or less'),
@@ -60,7 +60,7 @@ export function AddToken() {
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   function onSubmit(data: FormData) {
-    const tokenAlreadyAdded = myTokens.find(({ token }) => token === data.token)
+    const tokenAlreadyAdded = myTokens.find(({ name }) => name === data.name)
 
     if (!tokenAlreadyAdded) {
       const newToken = { ...data }
@@ -118,11 +118,11 @@ export function AddToken() {
       <Flex justify="center" direction="column">
         <Flex direction="column" mt="40px">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={!!errors.token}>
+            <FormControl isInvalid={!!errors.name}>
               <FormLabel color="text.primary">Token</FormLabel>
-              <Input id="token" {...register('token')} bg="white" />
+              <Input id="name" {...register('name')} bg="white" />
               <FormErrorMessage>
-                {errors.token && errors.token.message}
+                {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
 
