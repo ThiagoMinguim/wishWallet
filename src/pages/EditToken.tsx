@@ -196,7 +196,6 @@ export function EditToken() {
                   id="name"
                   bg="white"
                   {...register('name')}
-                  value={token.name}
                   defaultValue={token.name}
                 />
 
