@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -21,6 +22,7 @@ import { SButton } from '@/components/SButton'
 interface Token {
   token: string
   balance: string
+  id: string
 }
 
 type FormData = Token
@@ -37,7 +39,6 @@ const schema = Yup.object().shape({
 })
 
 export function AddToken() {
-
   const response = localStorage.getItem('@wishwallet:tokens')
   const wallet = response ? JSON.parse(response) : []
 
@@ -57,18 +58,19 @@ export function AddToken() {
     handleSubmit,
     register,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   function onSubmit(data: FormData) {
     const tokenAlreadyAdded = myTokens.find(({ token }) => token === data.token)
 
     if (!tokenAlreadyAdded) {
-      setMyTokens([...myTokens, data])
-      
+      const newToken = { ...data, id: uuidv4() }
+      setMyTokens([...myTokens, newToken])
+
       localStorage.setItem(
         wishWalletStorageKey,
-        JSON.stringify([...myTokens, data])
+        JSON.stringify([...myTokens, newToken])
       )
 
       toast({
