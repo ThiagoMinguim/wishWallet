@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -22,7 +21,6 @@ import { SButton } from '@/components/SButton'
 interface Token {
   token: string
   balance: string
-  id: string
 }
 
 type FormData = Token
@@ -65,7 +63,7 @@ export function AddToken() {
     const tokenAlreadyAdded = myTokens.find(({ token }) => token === data.token)
 
     if (!tokenAlreadyAdded) {
-      const newToken = { ...data, id: uuidv4() }
+      const newToken = { ...data }
       setMyTokens([...myTokens, newToken])
 
       localStorage.setItem(

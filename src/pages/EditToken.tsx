@@ -68,7 +68,7 @@ export function EditToken() {
   }
 
   const getToken = async (tokenName: string) => {
-    const targetToken = wallet.find((item: any) => item.token === tokenName)
+    const targetToken = wallet.find((item: Token) => item.token === tokenName)
 
     setToken(targetToken)
   }
@@ -101,7 +101,13 @@ export function EditToken() {
       tk.token === attToken.token ? data : tk
     )
 
-    if (attToken) {
+    const tokenAlreadyAdded = tokens.find(
+      ({ token }: any) => token === data.token
+    )
+
+    const sameUrl = pathname.split('/')[2] === data.token
+
+    if (!tokenAlreadyAdded || sameUrl) {
       setMyTokens(updatedTokens)
 
       localStorage.setItem(wishWalletStorageKey, JSON.stringify(updatedTokens))
@@ -194,7 +200,6 @@ export function EditToken() {
         <Flex justify="center" direction="column">
           <Flex direction="column" mt="40px">
             <form onSubmit={handleSubmit(attToken)}>
-              
               <FormControl isInvalid={!!errors.token}>
                 <FormLabel color="text.primary">Token</FormLabel>
                 <Input
