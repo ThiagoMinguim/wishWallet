@@ -6,17 +6,31 @@
 
 # Description of project
 
-- This project is based on a wallet, in which you can put a token and balance it, being able to remove or edit it.
+- The core of this project is to build a wallet to store your tokens.
 
 ## Getting Start
 
 First, run the development server:
 
 ```elm
+# Clone this repository
+git clone https://github.com/ThiagoMinguim/WishWallet.git
+
+# Go into the repository
+cd WishWallet
+
+# Install dependencies
+yarn install
+
+# Run the project 
+
 npm run dev
 # or
 yarn dev
+
+
 ```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Technologies used

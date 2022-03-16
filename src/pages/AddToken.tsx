@@ -34,6 +34,7 @@ const schema = Yup.object().shape({
   balance: Yup.number()
     .required('balance is required')
     .typeError('balance must be a number')
+    .positive('balance must be positive')
 })
 
 export function AddToken() {
