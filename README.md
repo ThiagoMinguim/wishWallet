@@ -14,19 +14,19 @@ First, run the development server:
 
 ```elm
 # Clone this repository
-git clone https://github.com/ThiagoMinguim/wishWallet.git
+$ git clone (https://github.com/ThiagoMinguim/wishWallet.git)
 
 # Go into the repository
-cd WishWallet
+$ cd WishWallet
 
 # Install dependencies
-yarn install
+$ yarn install
 
-# Run the project 
+# Run the project
 
-npm run dev
+$ npm run dev
 # or
-yarn dev
+$ yarn dev
 
 
 ```
