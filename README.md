@@ -8,6 +8,17 @@
 
 - This project is based on a wallet, in which you can put a token and balance it, being able to remove or edit it.
 
+## Getting Start
+
+First, run the development server:
+
+```elm
+npm run dev
+# or
+yarn dev
+```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
 ## Technologies used
 
 - [React](https://reactjs.org/)
@@ -15,15 +26,3 @@
 - [Chakra-ui](https://chakra-ui.com/)
 - [React Hook Form](https://react-hook-form.com/)
 - [Yup](https://github.com/jquense/yup)
-
-The project is deployed on Vercel, but you can also run it locally. For that you need to clone this repository and install the dependencies:
-
-To can run the project:
-
-```elm
--- Using npm:
-npm run dev
-
--- Using yarn:
-yarn dev
-```
