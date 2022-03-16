@@ -2,13 +2,20 @@ import { Flex, Link, Text } from '@chakra-ui/react'
 import { FaEdit } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
+interface Token {
+  name: string
+  balance: string
+}
+
 export function MyWalletList() {
+  const wishWalletStorageKey = '@wishwallet:tokens'
+
   const navigate = useNavigate()
 
-  const token = localStorage.getItem('@wishwallet:tokens')
+  const token = localStorage.getItem(wishWalletStorageKey)
   const wallet = token ? JSON.parse(token) : []
 
-  function handleGoEdit(e: any) {
+  function handleGoEdit(e: string) {
     navigate(`/edit-token/${e}`)
   }
 
@@ -18,18 +25,11 @@ export function MyWalletList() {
 
   return (
     <>
-      {wallet.map((tokens: any) => (
-        <Flex
-          w="500px"
-          mx="auto"
-          h="auto"
-          alignItems="center"
-          key={tokens.token}>
+      {wallet.map((token: Token) => (
+        <Flex w="500px" mx="auto" h="auto" alignItems="center" key={token.name}>
           <Link
             as={FaEdit}
-            onClick={() => {
-              handleGoEdit(tokens.token)
-            }}
+            onClick={() => handleGoEdit(token.name)}
             color="text.primary"
             h="1rem"
             w="1rem"
@@ -39,12 +39,12 @@ export function MyWalletList() {
           <Flex justify="space-between" w="100%">
             <Flex alignItems={'center'} gap="2">
               <Text color="text.primary" fontWeight="bold" fontSize="3xl">
-                {tokens.token}
+                {token.name}
               </Text>
             </Flex>
 
             <Text color="text.primary" fontWeight="bold" fontSize="3xl">
-              {numberFormatted(tokens.balance)}
+              {numberFormatted(token.balance)}
             </Text>
           </Flex>
         </Flex>
