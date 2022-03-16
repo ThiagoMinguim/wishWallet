@@ -76,7 +76,7 @@ export function EditToken() {
   function removeToken(tokenName: string) {
     const newWallet = wallet.filter((item: Token) => item.token !== tokenName)
 
-    localStorage.setItem('@wishwallet:tokens', JSON.stringify(newWallet))
+    localStorage.setItem(wishWalletStorageKey, JSON.stringify(newWallet))
 
     toast({
       title: 'Token Remove',
@@ -91,15 +91,20 @@ export function EditToken() {
   }
 
   function attToken(data: FormData) {
-    const attToken = myTokens.find(({ token }) => token === data.token)
+    const attToken: Token = wallet.find(
+      (tks: Token) => tks.token === pathname.split('/')[2]
+    )
 
-    if (!attToken) {
-      setMyTokens([...myTokens, data])
+    const tokens = JSON.parse(localStorage.getItem(wishWalletStorageKey)!)
 
-      localStorage.setItem(
-        wishWalletStorageKey,
-        JSON.stringify([...myTokens, data])
-      )
+    const updatedTokens = tokens.map((tk: Token) =>
+      tk.token === attToken.token ? data : tk
+    )
+
+    if (attToken) {
+      setMyTokens(updatedTokens)
+
+      localStorage.setItem(wishWalletStorageKey, JSON.stringify(updatedTokens))
 
       toast({
         title: 'Token Change Sucess',
@@ -109,7 +114,6 @@ export function EditToken() {
         duration: 5000,
         isClosable: true
       })
-
       reset()
       navigate(-1)
     } else {
@@ -128,7 +132,7 @@ export function EditToken() {
     handleSubmit,
     register,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
   useEffect(() => {
@@ -190,7 +194,8 @@ export function EditToken() {
         <Flex justify="center" direction="column">
           <Flex direction="column" mt="40px">
             <form onSubmit={handleSubmit(attToken)}>
-              <FormControl>
+              
+              <FormControl isInvalid={!!errors.token}>
                 <FormLabel color="text.primary">Token</FormLabel>
                 <Input
                   id="token"
@@ -204,7 +209,7 @@ export function EditToken() {
                 </FormErrorMessage>
               </FormControl>
 
-              <FormControl>
+              <FormControl isInvalid={!!errors.balance}>
                 <FormLabel color="text.primary" mt="20px">
                   Balance
                 </FormLabel>
@@ -218,6 +223,7 @@ export function EditToken() {
                   {errors.balance && errors.balance.message}
                 </FormErrorMessage>
               </FormControl>
+
               <Flex justify="space-between" mt="30">
                 <Flex>
                   <SButton
