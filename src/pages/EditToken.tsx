@@ -1,3 +1,8 @@
+import { useEffect, useState } from 'react'
+
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
 import {
   Flex,
   FormControl,
@@ -6,7 +11,8 @@ import {
   Input,
   FormErrorMessage,
   useDisclosure,
-  Button
+  Button,
+  useToast
 } from '@chakra-ui/react'
 
 import {
@@ -21,21 +27,122 @@ import {
 
 import { SButton } from '@/components/SButton'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+
+interface Token {
+  token: string
+  balance: string
+}
+
+type FormData = Token
+
+const schema = Yup.object().shape({
+  token: Yup.string()
+    .required('Token is required')
+    .min(2, 'min 2 characteres')
+    .max(4, 'max 4 characteres or less'),
+
+  balance: Yup.number()
+    .required('balance is required')
+    .typeError('balance must be a number')
+})
 
 export function EditToken() {
+  const wishWalletStorageKey = '@wishwallet:tokens'
+
+  const tokens = localStorage.getItem('@wishwallet:tokens')
+  const wallet = tokens ? JSON.parse(tokens) : []
+
+  const [token, setToken] = useState({} as Token)
+  const [myTokens, setMyTokens] = useState(wallet as Token[])
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const navigate = useNavigate()
+
+  const toast = useToast()
+
+  const { pathname } = useLocation()
 
   function handleBack() {
     navigate(-1)
   }
+
+  const getToken = async (tokenName: string) => {
+    const targetToken = wallet.find((item: any) => item.token === tokenName)
+
+    setToken(targetToken)
+  }
+
+  function removeToken(tokenName: string) {
+    const newWallet = wallet.filter((item: Token) => item.token !== tokenName)
+
+    localStorage.setItem('@wishwallet:tokens', JSON.stringify(newWallet))
+
+    toast({
+      title: 'Token Remove',
+      position: 'top',
+      description: 'The token has been remove to your wallet',
+      status: 'success',
+      duration: 5000,
+      isClosable: true
+    })
+
+    navigate(-1)
+  }
+
+  function attToken(data: FormData) {
+    const attToken = myTokens.find(({ token }) => token === data.token)
+
+    if (!attToken) {
+      setMyTokens([...myTokens, data])
+
+      localStorage.setItem(
+        wishWalletStorageKey,
+        JSON.stringify([...myTokens, data])
+      )
+
+      toast({
+        title: 'Token Change Sucess',
+        position: 'top',
+        description: 'The token has been added to your wallet',
+        status: 'success',
+        duration: 5000,
+        isClosable: true
+      })
+
+      reset()
+      navigate(-1)
+    } else {
+      toast({
+        title: 'Token already exists',
+        position: 'top',
+        description: 'The token already exists in your wallet',
+        status: 'error',
+        duration: 5000,
+        isClosable: true
+      })
+    }
+  }
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<FormData>({ resolver: yupResolver(schema) })
+
+  useEffect(() => {
+    const targetToken = pathname.split('/')[2]
+
+    getToken(targetToken)
+  }, [])
 
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>You are sure?</ModalHeader>
+          <ModalHeader>Are you sure?</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text>
@@ -48,7 +155,13 @@ export function EditToken() {
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
+            <Button
+              colorScheme="red"
+              onClick={() => {
+                removeToken(token.token)
+              }}>
+              Remove Token
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -76,44 +189,54 @@ export function EditToken() {
 
         <Flex justify="center" direction="column">
           <Flex direction="column" mt="40px">
-            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-            <FormControl>
-              <FormLabel color="text.primary">Token</FormLabel>
-              <Input id="token" bg="white" />
-              {/* <FormErrorMessage>
-              {errors.token && errors.token.message}
-            </FormErrorMessage> */}
-            </FormControl>
+            <form onSubmit={handleSubmit(attToken)}>
+              <FormControl>
+                <FormLabel color="text.primary">Token</FormLabel>
+                <Input
+                  id="token"
+                  bg="white"
+                  placeContent={'aaaaaa'}
+                  {...register('token')}
+                  defaultValue={token.token}
+                />
+                <FormErrorMessage>
+                  {errors.token && errors.token.message}
+                </FormErrorMessage>
+              </FormControl>
 
-            <FormControl>
-              <FormLabel color="text.primary" mt="20px">
-                Balance
-              </FormLabel>
-              <Input id="balance" bg="white" />
-              {/* <FormErrorMessage>
-              {errors.balance && errors.balance.message}
-            </FormErrorMessage> */}
-            </FormControl>
-            <Flex justify="space-between" mt="30">
-              <Flex>
+              <FormControl>
+                <FormLabel color="text.primary" mt="20px">
+                  Balance
+                </FormLabel>
+                <Input
+                  id="balance"
+                  bg="white"
+                  {...register('balance')}
+                  defaultValue={token.balance}
+                />
+                <FormErrorMessage>
+                  {errors.balance && errors.balance.message}
+                </FormErrorMessage>
+              </FormControl>
+              <Flex justify="space-between" mt="30">
+                <Flex>
+                  <SButton
+                    bg="button.remove"
+                    text="Remove"
+                    color="text.primary"
+                    width="150px"
+                    onClick={onOpen}
+                  />
+                </Flex>
                 <SButton
-                  bg="button.remove"
-                  text="Remove"
+                  bg="button.confirm"
+                  text="Save"
+                  type="submit"
                   color="text.primary"
-                  width="150px"
-                  onClick={onOpen}
+                  width="130px"
                 />
               </Flex>
-              <SButton
-                bg="button.confirm"
-                text="Save"
-                type="submit"
-                color="text.primary"
-                width="130px"
-              />
-            </Flex>
-
-            {/* </form> */}
+            </form>
           </Flex>
         </Flex>
       </Flex>

@@ -7,7 +7,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   Text,
@@ -38,6 +37,7 @@ const schema = Yup.object().shape({
 })
 
 export function AddToken() {
+
   const response = localStorage.getItem('@wishwallet:tokens')
   const wallet = response ? JSON.parse(response) : []
 
@@ -62,8 +62,10 @@ export function AddToken() {
 
   function onSubmit(data: FormData) {
     const tokenAlreadyAdded = myTokens.find(({ token }) => token === data.token)
+
     if (!tokenAlreadyAdded) {
       setMyTokens([...myTokens, data])
+      
       localStorage.setItem(
         wishWalletStorageKey,
         JSON.stringify([...myTokens, data])
