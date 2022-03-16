@@ -2,7 +2,7 @@
 
 - Challenge proposed by the company klever for front-end developer Jr.
 
-![Logo da company klever](https://pasteboard.co/Uszaja8Vfz8H.png)
+![Logo da company klever](https://support.probit.com/hc/article_attachments/900008248666/klever_2.png)
 
 # Description of project
 
