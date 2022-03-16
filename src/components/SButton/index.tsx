@@ -1,11 +1,11 @@
 import { Button } from '@chakra-ui/react'
 
-type BtnType = 'submit' | 'reset' | 'button'
+type ButtonType = 'submit' | 'reset' | 'button'
 
 interface ButtonProps {
   onClick?: () => void
   text: string
-  type?: BtnType
+  type?: ButtonType
   bg: string
   color?: string
   width?: string

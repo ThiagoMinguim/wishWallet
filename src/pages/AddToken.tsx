@@ -1,7 +1,6 @@
 import { useState } from 'react'
-
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 
 import {
   Flex,
@@ -13,8 +12,8 @@ import {
   useToast
 } from '@chakra-ui/react'
 
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 import { SButton } from '@/components/SButton'
 
@@ -123,6 +122,7 @@ export function AddToken() {
             <FormControl isInvalid={!!errors.name}>
               <FormLabel color="text.primary">Token</FormLabel>
               <Input id="name" {...register('name')} bg="white" />
+
               <FormErrorMessage>
                 {errors.name && errors.name.message}
               </FormErrorMessage>
@@ -133,6 +133,7 @@ export function AddToken() {
                 Balance
               </FormLabel>
               <Input id="balance" {...register('balance')} bg="white" />
+
               <FormErrorMessage>
                 {errors.balance && errors.balance.message}
               </FormErrorMessage>

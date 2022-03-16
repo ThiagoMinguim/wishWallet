@@ -1,6 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 import { Flex, Link, Text } from '@chakra-ui/react'
 import { FaEdit } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
 
 interface Token {
   name: string
