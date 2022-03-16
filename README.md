@@ -14,7 +14,7 @@ First, run the development server:
 
 ```elm
 # Clone this repository
-$ git clone [https://github.com/ThiagoMinguim/wishWallet.git]
+$ git clone https://github.com/ThiagoMinguim/wishWallet.git
 
 # Go into the repository
 $ cd wishWallet
