@@ -37,7 +37,8 @@ const schema = Yup.object().shape({
   name: Yup.string()
     .required('Token is required')
     .min(2, 'min 2 characteres')
-    .max(4, 'max 4 characteres or less'),
+    .max(4, 'max 4 characteres or less')
+    .uppercase(),
 
   balance: Yup.number()
     .required('balance is required')
