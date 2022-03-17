@@ -8,6 +8,10 @@
 
 - The core of this project is to build a wallet to store your tokens.
 
+# Link project in netlify
+
+[WishWallet - ThiagoM](https://wishwallet-thiagom.netlify.app/)
+
 ## Getting Start
 
 First, run the development server:
