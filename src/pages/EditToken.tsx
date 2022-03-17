@@ -55,6 +55,9 @@ export function EditToken() {
 
     setToken(targetToken)
     setWallet(wallet)
+
+    setValue('name', targetToken.name)
+    setValue('balance', targetToken.balance)
   }
 
   function removeToken(tokenName: string) {
@@ -114,6 +117,7 @@ export function EditToken() {
     handleSubmit,
     register,
     reset,
+    setValue,
     formState: { errors }
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
@@ -179,12 +183,7 @@ export function EditToken() {
               <FormControl isInvalid={!!errors.name}>
                 <FormLabel color="text.primary">Token</FormLabel>
 
-                <Input
-                  id="name"
-                  bg="white"
-                  {...register('name')}
-                  defaultValue={token.name!}
-                />
+                <Input bg="white" {...register('name')} />
 
                 <FormErrorMessage>
                   {errors.name && errors.name.message}
@@ -195,12 +194,7 @@ export function EditToken() {
                 <FormLabel color="text.primary" mt="20px">
                   Balance
                 </FormLabel>
-                <Input
-                  id="balance"
-                  bg="white"
-                  {...register('balance')}
-                  defaultValue={token.balance!}
-                />
+                <Input bg="white" {...register('balance')} />
 
                 <FormErrorMessage>
                   {errors.balance && errors.balance.message}

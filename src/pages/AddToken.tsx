@@ -108,7 +108,10 @@ export function AddToken() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.name}>
               <FormLabel color="text.primary">Token</FormLabel>
-              <Input id="name" {...register('name')} bg="white" />
+              <Input
+                {...register('name')}
+                bg="white"
+              />
 
               <FormErrorMessage>
                 {errors.name && errors.name.message}
@@ -119,7 +122,10 @@ export function AddToken() {
               <FormLabel color="text.primary" mt="20px">
                 Balance
               </FormLabel>
-              <Input id="balance" {...register('balance')} bg="white" />
+              <Input
+                {...register('balance')}
+                bg="white"
+              />
 
               <FormErrorMessage>
                 {errors.balance && errors.balance.message}
