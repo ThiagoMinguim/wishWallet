@@ -128,12 +128,12 @@ export function EditToken() {
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Are you sure?</ModalHeader>
+          <ModalHeader>Are you sure you want to remove ?</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text>
-              Are you sure you want to delete this token? This action cannot be
-              undone.
+              Are you sure you want to delete {token.name} token ? This action
+              cannot be undone.
             </Text>
           </ModalBody>
 
@@ -183,7 +183,7 @@ export function EditToken() {
                   id="name"
                   bg="white"
                   {...register('name')}
-                  defaultValue={token.name}
+                  defaultValue={token.name!}
                 />
 
                 <FormErrorMessage>
@@ -199,7 +199,7 @@ export function EditToken() {
                   id="balance"
                   bg="white"
                   {...register('balance')}
-                  defaultValue={token.balance}
+                  defaultValue={token.balance!}
                 />
 
                 <FormErrorMessage>
